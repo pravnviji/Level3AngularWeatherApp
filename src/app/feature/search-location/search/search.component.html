@@ -1,0 +1,23 @@
+<div class="container-fluid">
+  <div class="well">
+    <h2>Enter a zipcode:</h2>
+    <input
+      class="form-control"
+      placeholder="Zipcode"
+      type="text"
+      id="addLocation"
+      #addLocation
+    />
+    <br />
+    <button
+      #btnSubmit
+      class="btn btn-primary"
+      id="addLocationBtn"
+      (click)="storeWeatherLocation()"
+    >
+      Add location
+    </button>
+  </div>
+
+  <ng-search-details [detailweatherdata]="weatherData"></ng-search-details>
+</div>

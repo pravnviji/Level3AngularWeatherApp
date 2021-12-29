@@ -10,9 +10,9 @@ import { FeatureConstants } from "../../utils";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-  selector: "ng-search-location",
-  templateUrl: "./search-location.component.html",
-  styleUrls: ["./search-location.component.scss"],
+  selector: "ng-search",
+  templateUrl: "./search.component.html",
+  styleUrls: ["./search.component.scss"],
 })
 export class SearchLocationComponent implements OnInit {
   @ViewChild("addLocation", { static: true })
@@ -25,7 +25,6 @@ export class SearchLocationComponent implements OnInit {
   public weatherData: Array<TLocation> | undefined;
 
   constructor(
-    private router: Router,
     private logger: Logger,
     private weatherService: WeatherService,
     private localStorage: LocalStorageService
@@ -35,11 +34,6 @@ export class SearchLocationComponent implements OnInit {
 
   ngOnInit(): void {
     this.logger.debug(":: SearchLocationComponent OnInit ::");
-
-    const getWeatherData = this.localStorage.get(
-      FeatureConstants.ZIP_WEATHER_DATA
-    );
-    this.updateWeather(getWeatherData);
   }
 
   storeWeatherLocation = () => {
@@ -81,26 +75,9 @@ export class SearchLocationComponent implements OnInit {
     const getUpdatedData: Array<TLocation> = this.localStorage.get(
       FeatureConstants.ZIP_WEATHER_DATA
     );
-
-    this.updateWeather(getUpdatedData);
+    this.weatherData = getUpdatedData;
+    this.logger.debug(":: Weather Data Parsed ::");
   };
-
-  updateWeather = (data?: Array<TLocation>) => {
-    this.logger.debug("setUpdateWeatherData");
-
-    this.isCurrentWeatherEnable =
-      this.localStorage.get(FeatureConstants.ZIP_WEATHER_DATA) !== null &&
-      this.localStorage.get(FeatureConstants.ZIP_WEATHER_DATA).length > 0
-        ? true
-        : false;
-    if (this.isCurrentWeatherEnable) {
-      this.weatherData = data;
-    }
-  };
-
-  identify(index: any, item: TLocation) {
-    return item.id;
-  }
 
   checkDataToStorage = (): boolean => {
     this.logger.debug(`:: checkDataToStorage ::`);
@@ -139,22 +116,5 @@ export class SearchLocationComponent implements OnInit {
     } else {
       this.localStorage.set(FeatureConst, [addZipCode]);
     }
-  };
-
-  goToForecast = (weather: any) => {
-    this.localStorage.set(FeatureConstants.LOCATION, weather.name);
-    this.router.navigate([`forecast/${weather?.zipcode}`]);
-  };
-
-  removeWeather = (id: string) => {
-    this.logger.debug("removeWeatherData", id);
-    const exisitingData: Array<TLocation> = this.localStorage.get(
-      FeatureConstants.ZIP_WEATHER_DATA
-    );
-    const newDataArray: Array<TLocation> = exisitingData.filter(
-      (item) => item.id !== id
-    ) as Array<TLocation>;
-    this.localStorage.set(FeatureConstants.ZIP_WEATHER_DATA, newDataArray);
-    this.weatherData = newDataArray;
   };
 }

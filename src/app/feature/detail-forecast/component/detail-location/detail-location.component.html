@@ -29,19 +29,20 @@
         </li>
       </ul>
     </div>
-    <button
-      class="btn btn-success"
-      tabindex="0"
-      id="mainPageBtn"
-      (click)="navigateHome()"
-    >
-      &lt; Back to main page
-    </button>
   </div>
 </ng-template>
 
 <ng-template #noWeatherTemplate>
-  <div class="text-center lead bg-warning text-warning">
+  <div class="d-flex p-2 justify-content-center bd-highlight bg-warning mx-3">
     No Data Available for this Location
   </div>
 </ng-template>
+
+<button
+  class="btn btn-success my-2 ml-3"
+  tabindex="0"
+  id="mainPageBtn"
+  (click)="navigateHome()"
+>
+  &lt; Back to main page
+</button>

@@ -1,16 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { SearchLocationComponent } from "./components/";
-
-const routes: Routes = [
-  {
-    path: "",
-    component: SearchLocationComponent,
-    data: {
-      reuse: true,
-    },
-  },
-];
+const routes: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
