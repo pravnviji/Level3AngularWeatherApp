@@ -1,9 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
+import { UntilDestroy } from "@ngneat/until-destroy";
 import { debounceTime, Subscription } from "rxjs";
 import { LocalStorageService } from "src/app/core/local.storage.service";
 import { Logger } from "src/app/core/logger.service";
-import { UntilDestroy } from "@ngneat/until-destroy";
 import { TLocation } from "../../models/weather.type";
 import { WeatherService } from "../../services";
 import { FeatureConstants } from "../../utils";
@@ -41,7 +40,7 @@ export class SearchLocationComponent implements OnInit {
     const zipCode: string = this.addLocation.nativeElement.value;
     this.logger.debug(":: Zipcode ::", zipCode);
     if (this.checkDataToStorage() || !this.checkZipValid(zipCode)) {
-      alert("Please enter the valid zipcode or already exist");
+      alert("Please enter the valid zipcode || Already exist");
       return;
     }
     this.btnSubmit.nativeElement.disabled = true;

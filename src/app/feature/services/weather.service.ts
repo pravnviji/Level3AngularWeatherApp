@@ -1,27 +1,26 @@
 import { Injectable } from "@angular/core";
+import { untilDestroyed } from "@ngneat/until-destroy";
 import {
   BehaviorSubject,
   catchError,
   map,
-  Observable,
-  of,
-  pluck,
+  Observable, pluck,
   retry,
+  throwError
 } from "rxjs";
-
-import { untilDestroyed } from "@ngneat/until-destroy";
 import { HttpRequestService } from "src/app/core/http/http-request.service";
 import { Logger } from "src/app/core/logger.service";
 import { environment } from "src/environments/environment";
+import { v4 as uuid } from "uuid";
 import {
   TForecast,
   TLocation,
   TMain,
   TWeather,
-  TWeatherMain,
+  TWeatherMain
 } from "../models/weather.type";
-import { v4 as uuid } from "uuid";
 import { FeatureConstants } from "../utils";
+
 
 @Injectable({
   providedIn: "root",
@@ -35,13 +34,22 @@ export class WeatherService {
   public forecastData$: Observable<TForecast[]> | undefined =
     this.forecastSubject.asObservable();
 
+
+
   getWeatherData = (location: string): Observable<TLocation> => {
     this.logger.debug("-------- getWeatherData ----------");
-    this.logger.debug("url", environment.herokuLocationApiUrl + location);
-    return this.http.get(environment.herokuLocationApiUrl + location).pipe(
+    this.logger.debug("url", environment.openWeatherApiUrl + location);
+    const weatherUrl = `${environment.openWeatherApiUrl}weather?zip=${location},us&appid=${environment.openWeatherId}`;
+    return this.http.get(weatherUrl).pipe(
       retry(3),
-      map((result) => this.mapGetWeatherData(result as TLocation))
+      catchError((err: any)=>this.getWeatherError(err)),
+      map((result) => this.mapGetWeatherData(result as TLocation)),
     );
+  };
+
+  getWeatherError = (err : any) => {
+   alert("Invalid zipcode || zipcode is not belongs to region of US");
+   return throwError(() => err);
   };
 
   mapGetWeatherData = (result: any): TLocation => {
@@ -92,13 +100,12 @@ export class WeatherService {
         retry(1),
         pluck("list"),
         untilDestroyed(this),
-        catchError(this.getForecastError),
+        catchError((err)=> throwError(() => err)),
         map((result) => this.mapForeCast(result))
       )
       .subscribe();
   };
 
-  getForecastError = () => of(0);
 
   mapForeCast = (result: any) => {
     this.logger.debug("---------------------------------------");
